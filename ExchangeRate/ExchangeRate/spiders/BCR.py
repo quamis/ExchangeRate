@@ -2,6 +2,7 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import Selector
 from ExchangeRate.items import ExchangerateItem
 
+
 class BCRSpider(BaseSpider):
 	name = "BCR"
 	allowed_domains = ["www.bcr.ro"]
