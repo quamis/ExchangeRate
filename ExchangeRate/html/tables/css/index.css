@@ -1,0 +1,156 @@
+/* filters */
+#xCHFilters{
+	position: fixed;
+	top: 0px;
+	height: 100px;
+	
+	right: 1em;
+	width: 300px;
+	border: 1px solid #ccc;
+}
+#xCHFilters>table{
+	width: 100%;
+}
+#displayedDays>div.selector>input{
+	width: 200px;
+	display: block;
+}
+#displayedDays>div.selector>span{
+	float: right;
+	width: 3em; 
+	height: 16px;
+	text-align: right;
+	border-bottom: 1px solid #888;
+}
+#displayedDays>div.shotcuts{
+	text-align: left;
+}
+#displayedDays>div.shortcuts>span{
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	color: #44c;
+}
+#displayedDays>div.shortcuts>span:hover{
+	border-bottom: 1px solid #008;
+}
+
+
+/*data table*/
+#xCHTarget>table{
+	border-collapse: collapse;
+	font-family: monospace;
+	font-size: 12px;
+}
+table>tbody>tr>td{
+	font-family: monospace;
+	padding: 0.15em;
+	border: 1px solid #fff;
+}
+
+
+table tr.newDay td{
+	padding-top: 0.5em;
+}
+
+table tr td.dayOfWeek{
+	font-family: Verdana, Geneva, sans-serif;
+	font-weight: bold;
+	font-size: 14px;
+	padding-right: 1em;
+}
+table tr td.date{
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+}
+
+
+table tr td.hour{
+	color: #888;
+}
+
+table tr td.reference.value{
+	font-weight: bold;
+}
+table tr td.reference.diff{
+	font-size: 12px;
+}
+
+table tr td.value{
+	border: 1px solid #f0f0f0;
+	vertical-align: bottom;
+}
+table tr td.diff{
+	border: 1px dashed #f0f0f0;
+	font-size: 8px;
+	vertical-align: bottom;
+}
+table tr td.diff.variation-positive{
+	vertical-align: bottom;
+}
+table tr td.diff.variation-negative{
+	vertical-align: top;
+}
+
+/* hovers */
+table>tbody.day:hover>tr>td.variation-none{
+	color: #ddd;
+}
+table>tbody.day:hover>tr>td{
+	border: 1px solid #ccc;
+}
+/*
+table>tbody.day>tr:hover>td.variation-none{
+	color: #666;
+}
+*/
+
+
+
+table>tbody>tr>td.value.variation-none{
+	color: #eee;
+}
+table>tbody>tr>td.value.variation-positive{
+	color: #a00;
+}
+table>tbody>tr>td.value.variation-negative{
+	color: #0a0;
+}
+
+table>tbody>tr>td.diff.variation-none{
+	color: #f0f0f0;
+}
+table>tbody>tr>td.diff.variation-positive{
+	color: #a00;
+}
+table>tbody>tr>td.diff.variation-negative{
+	color: #0a0;
+}
+
+/* min/max */
+table>tbody>tr>td.minimum-01p{
+	background-color: #80ff80;
+}
+table>tbody>tr>td.maximum-01p{
+	background-color: #ff8080;
+}
+
+table>tbody>tr>td.minimum-05p{
+	background-color: #c0ffc0;
+}
+table>tbody>tr>td.maximum-05p{
+	background-color: #ffc0c0;
+}
+
+table>tbody>tr>td.minimum-10p{
+	background-color: #f0fff0;
+}
+table>tbody>tr>td.maximum-10p{
+	background-color: #fff0f0;
+}
+
+table>tbody>tr>td.minimum-25p{
+	background-color: #fcfffc;
+}
+table>tbody>tr>td.maximum-25p{
+	background-color: #fffcfc;
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html ng-app="ExchangeRate" >
+<head>
+	<meta charset="utf-8">
+	<title>xCh - data tables</title>
+	<script>document.write('<base href="' + document.location + '" />');</script>
+	<script src="http://momentjs.com/downloads/moment.min.js"></script>
+	
+	<script src="../ExchangeRate-data.js"></script>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://underscorejs.org/underscore-min.js"></script>
+	
+	<script src="js/index.js"></script>
+	<script src="js/xCH.js"></script>
+	<script src="js/ExchangeRateDataParser.js"></script>
+  
+	<!-- line-chart stylesheet -->
+	<link rel="stylesheet" href="css/index.css">
+  
+</head>
+<body>
+	<div id="xCHFilters">
+		<table>
+			<tr>
+				<td>Days</td>
+				<td id="displayedDays" >
+					<div class="selector">
+						<span></span>
+						<input type="range" value="14" min="3" max="360" step="1">
+					</div>
+					<div class='shortcuts'>
+						<span data-value="7">1w</span>
+						<span data-value="14">2w</span>
+						<span data-value="21">3w</span>
+						<span data-value="31">1m</span>
+						<span data-value="92">3m</span>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div id="xCHTarget">
+	</div>
+
+	<script> 
+		xchData = new ExchangeRateDataParser(ExchangeRateData);
+		xchData.addFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate());
+		xch = new _xCH( xchData ); 
+		xch.attach($('#xCHTarget')).reset().render();
+		
+		function updateDataSeries() {
+			xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate())
+			xch.reset().render();
+			updateDataSeries.timeout = null;
+		}
+		
+		$('#displayedDays>div.shortcuts>span').click(function(evt){
+			$('#displayedDays>div.selector>input').val($(evt.target).attr('data-value'));
+			$('#displayedDays>div.selector>span').html($('#displayedDays>div.selector>input').val());
+			updateDataSeries();
+		});
+		
+		$('#displayedDays>div.selector>input').mousemove(function(){
+			$('#displayedDays>div.selector>span').html($('#displayedDays>div.selector>input').val());
+			
+			if(updateDataSeries.timeout) {
+				clearTimeout(updateDataSeries.timeout);
+			}
+			updateDataSeries.timeout = setTimeout(updateDataSeries, 2500);
+		});
+		
+		$('#displayedDays>input').change(function(){
+			if(updateDataSeries.timeout) {
+				clearTimeout(updateDataSeries.timeout);
+			}
+			updateDataSeries.timeout = null;
+			updateDataSeries();
+		});
+	</script>
+</body>
+</html>

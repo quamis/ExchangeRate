@@ -1,0 +1,46 @@
+<!doctype html>
+<html ng-app="ExchangeRate" >
+<head>
+	<meta charset="utf-8">
+	<title>xCh</title>
+	<script>document.write('<base href="' + document.location + '" />');</script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://code.angularjs.org/1.1.4/angular.js"></script>
+
+	<script src="https://rawgithub.com/timrwood/moment/2.1.0/moment.js"></script>
+	
+	<script src="../ExchangeRate-data.js"></script>
+	
+	<script src="js/app.js"></script>
+  
+	<!-- line-chart stylesheet -->
+	<link rel="stylesheet" href="css/line-chart.css">
+  
+	<!-- line-chart directive -->
+	<script src="js/line-chart.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+	<div ng-controller="chart" class="currencyChart {{minimized}}">
+		<div class="title-minimized" ng-click="toggleVisibility(this);">EUR</div>
+		<div class="title">EUR</div>
+		<div class="bg">€</div>
+		<linechart data='data_EUR_sell' options='options_EUR_sell'></linechart>
+	</div>
+	
+	<div ng-controller="chart" class="currencyChart {{minimized}}">
+		<div class="title-minimized" ng-click="toggleVisibility(this);">USD</div>
+		<div class="title">USD</div>
+		<div class="bg">$</div>
+		<linechart data='data_USD_sell' options='options_USD_sell'></linechart>
+	</div>
+	
+	<div ng-controller="chart" class="currencyChart {{minimized}}">
+		<div class="title-minimized" ng-click="toggleVisibility(this);">GBP</div>
+		<div class="title">GBP</div>
+		<div class="bg">£</div>
+		<linechart data='data_GBP_sell' options='options_GBP_sell'></linechart>
+	</div>
+	
+	
+</body>
+</html>

@@ -1,0 +1,59 @@
+.axis text {
+  font: 10px monospace;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+div.currencyChart{
+	width: 100%;
+	height:250px;
+	position: relative;
+	border: 1px dashed #ccc;
+	margin-bottom: 5em;
+}
+div.currencyChart.minimized{
+	height:1em;
+	margin-bottom: 0.5em;
+}
+div.currencyChart.minimized>div.chart{
+	display: none;
+}
+div.currencyChart.minimized>div.title{
+	display: none;
+}
+div.currencyChart.minimized>div.bg{
+	display: none;
+}
+
+div.currencyChart div.bg{
+	position: absolute;
+	z-index: 0;
+
+	text-align: right;
+	width: 100%;
+	bottom: 0;
+	right: 50px;
+	font-size: 180px;
+	
+	opacity: 0.1;
+	color: #e0e0e0;
+	text-shadow: 0px 0px 8px #000;
+}
+
+div.currencyChart div.title{
+	font-size: 18px;
+	color: #004;
+	text-shadow: 0px 0px 2px #000;
+	position: absolute;
+	transform: rotate(-90deg);	
+
+	bottom: 3.75em;
+	left: -8px;
+	letter-spacing: 4px;
+}
