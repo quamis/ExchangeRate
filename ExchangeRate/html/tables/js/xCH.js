@@ -40,7 +40,7 @@ _xCH.prototype.data_parser_getMinMax = function(currency){
 		}
 	}
 	
-	var banks = this.definedBanks;
+	var banks = this.definedBanks.slice(0);	// clone this.definedBanks
 	banks.push(this.referenceBank);
 	var ret = {};
 	
@@ -155,18 +155,42 @@ _xCH.prototype.render_row_attachClasses = function(td, diff, value){
 	td.addClass(cls);
 }
 
-_xCH.prototype.render_header = function(trh, dt){
-	trh.append($('<td colspan="2">').html("date"));
-	trh.append($('<td>').html("hour"));
+function getWidth(dataTable, indexArr) {
+	var width = 0;
+	for(var i=0; i<indexArr.length; i++) {
+		if(indexArr[i]==0) {
+			width+= $($(dataTable).find('>tbody>tr:first>td').get(indexArr[i])).outerWidth(true);
+		}
+		else if(indexArr[i]>3) {
+			if(indexArr[i]%2==0) {
+				width+= $($(dataTable).find('>tbody>tr:first>td').get(indexArr[i])).outerWidth(true)-1;
+			}
+			else {
+				width+= $($(dataTable).find('>tbody>tr:first>td').get(indexArr[i])).width();
+			}
+		}
+		else {
+			width+= $($(dataTable).find('>tbody>tr:first>td').get(indexArr[i])).width();
+		}
+	}
 	
-	trh.append($('<td colspan="2">').html("BNR"));
+	return width;
+}
 	
-	for(var bank in dt['banks']){
-		trh.append($('<td colspan="2">').html(bank));
+_xCH.prototype._add_header = function(trh, dataTable){
+	
+	trh.append($('<td colspan="2">').html("date").width(getWidth(dataTable,[0,1])) );
+	trh.append($('<td>').html("hour").width(getWidth(dataTable, [2])));
+	
+	trh.append($('<td colspan="2">').html("BNR").width(getWidth(dataTable,[3,4])));
+	
+	for(var i=0; i<this.definedBanks.length; i++){
+		trh.append($('<td colspan="2">').html(this.definedBanks[i]).width(getWidth(dataTable,[i*2+5, i*2+5+1])) );
 	}
 	
 	return trh;
 }
+
 
 _xCH.prototype.render_row = function(tr, dt){
 	if(dt['date']){
@@ -237,22 +261,29 @@ _xCH.prototype.render_row = function(tr, dt){
 	return tr;
 }
 
+
+
+_xCH.prototype.render_header = function(dataTable){
+	var tableHeader = $('<table>');
+	this.target.append(tableHeader);
+	tableHeader.addClass('header');
+	var trh = $('<tr>');
+	trh = this._add_header(trh, dataTable);
+	tableHeader.append(trh);
+	
+	return this;
+}
+
+
 _xCH.prototype.render = function(){
 	var table = $('<table>');
-	var tableHeader = $('<table>');
+	
 	this.target.append(table);
-	this.target.append(tableHeader);
+	
+	table.addClass('data');
 
 	var lastValue = null;
-	var headerRendered = false;
 	while(dt = this.data_parser_next()){
-		if(!headerRendered) {
-			var trh = $('<tr>');
-			trh = this.render_header(trh, dt);
-			tableHeader.append(trh);
-			headerRendered = true;
-		}
-		
 		var tr = $('<tr>');
 		tr = this.render_row(tr, dt);
 		
@@ -263,6 +294,8 @@ _xCH.prototype.render = function(){
 		}
 		tbody.append(tr);
 	}
+	
+	this.render_header(table);
 	
 	return this;
 }

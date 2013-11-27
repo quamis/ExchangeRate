@@ -8,7 +8,7 @@
 	width: 300px;
 	border: 1px solid #ccc;
 }
-#xCHFilters>table{
+#xCHFilters>table.data{
 	width: 100%;
 }
 #displayedDays>div.selector>input{
@@ -29,6 +29,7 @@
 	margin-left: 0.5em;
 	margin-right: 0.5em;
 	color: #44c;
+	cursor: pointer;
 }
 #displayedDays>div.shortcuts>span:hover{
 	border-bottom: 1px solid #008;
@@ -36,10 +37,13 @@
 
 
 /*data table*/
-#xCHTarget>table{
+#xCHTarget>table.data{
 	border-collapse: collapse;
 	font-family: monospace;
 	font-size: 12px;
+	margin-top: 19px;
+	background-color: #f0f0f0;
+	border: 1px solid #000 !important;
 }
 table>tbody>tr>td{
 	font-family: monospace;
@@ -153,4 +157,32 @@ table>tbody>tr>td.minimum-25p{
 }
 table>tbody>tr>td.maximum-25p{
 	background-color: #fffcfc;
+}
+
+/** header **/
+#xCHTarget>table.header{
+	border-collapse: collapse;
+	font-family: monospace;
+	font-size: 12px;
+	
+	opacity: 0.60;
+	background-color: #f0f0f0;
+	
+	color: #000;
+	
+	position: fixed;
+	top: 0px;
+	
+	table-layout: fixed;
+	white-space: pre;
+}
+#xCHTarget>table.header:hover{
+	opacity: 1;
+}
+#xCHTarget>table.header tbody td{
+	border: 1px solid #000;
+	text-align: center;
+}
+#xCHTarget>table.header tbody td:nth-child(1){
+	text-align: left;
 }
