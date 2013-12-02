@@ -1,3 +1,6 @@
+body{
+	background-color: #ffffff;
+}
 /* filters */
 #xCHFilters{
 	position: fixed;
@@ -42,7 +45,7 @@
 	font-family: monospace;
 	font-size: 12px;
 	margin-top: 19px;
-	background-color: #f0f0f0;
+	background-color: #ffffff;
 	border: 1px solid #000 !important;
 }
 table>tbody>tr>td{
