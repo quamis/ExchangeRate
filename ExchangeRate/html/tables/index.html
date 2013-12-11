@@ -52,9 +52,12 @@
 		xch.attach($('#xCHTarget')).reset().render();
 		
 		function updateDataSeries() {
-			xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate())
-			xch.reset().render();
 			updateDataSeries.timeout = null;
+			xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate())
+			xch.reset();
+			setTimeout(function(){
+				xch.render();
+			}, 1);
 		}
 		
 		$('#displayedDays>div.shortcuts>span').click(function(evt){

@@ -102,6 +102,19 @@ table tr td.diff.variation-negative{
 table>tbody.day:hover>tr>td.variation-none{
 	color: #ddd;
 }
+table>tbody.day:hover>tr>td.value.variation-positive{
+	color: #C04545;	/* red */
+}
+table>tbody.day:hover>tr>td.value.variation-positive.minimum-01p{
+	color: #E16666; 	/*red*/
+}
+table>tbody.day:hover>tr>td.value.variation-negative{
+	color: #379A37;	/* green */
+}
+table>tbody.day:hover>tr>td.value.variation-negative.minimum-01p{
+	color: #CAEFCA;
+}
+
 table>tbody.day:hover>tr>td{
 	border: 1px solid #ccc;
 }
@@ -114,13 +127,13 @@ table>tbody.day>tr:hover>td.variation-none{
 
 
 table>tbody>tr>td.value.variation-none{
-	color: #eee;
+	color: #F8F8F8;
 }
 table>tbody>tr>td.value.variation-positive{
-	color: #a00;
+	color: #F9A7A7; 	/*red*/
 }
 table>tbody>tr>td.value.variation-negative{
-	color: #0a0;
+	color: #A0EFA0; 	/*green*/
 }
 
 table>tbody>tr>td.diff.variation-none{
@@ -133,33 +146,37 @@ table>tbody>tr>td.diff.variation-negative{
 	color: #0a0;
 }
 
-/* min/max */
+/* min/max 
+	@see http://colorschemedesigner.com/#2P21ThxscdgNK
+	http://colorschemedesigner.com/#2P61ThxscdgNK
+*/
 table>tbody>tr>td.minimum-01p{
-	background-color: #80ff80;
+	background-color: #379A37;
+	color: #ABD25F;
 }
 table>tbody>tr>td.maximum-01p{
-	background-color: #ff8080;
+	background-color: #C04545;
 }
 
 table>tbody>tr>td.minimum-05p{
-	background-color: #c0ffc0;
+	background-color: #51B451;
 }
 table>tbody>tr>td.maximum-05p{
-	background-color: #ffc0c0;
+	background-color: #E16666;
 }
 
 table>tbody>tr>td.minimum-10p{
-	background-color: #f0fff0;
+	background-color: #A0EFA0;
 }
 table>tbody>tr>td.maximum-10p{
-	background-color: #fff0f0;
+	background-color: #F9A7A7;
 }
 
 table>tbody>tr>td.minimum-25p{
-	background-color: #fcfffc;
+	background-color: #CAEFCA;
 }
 table>tbody>tr>td.maximum-25p{
-	background-color: #fffcfc;
+	background-color: #F9D2D2;
 }
 
 /** header **/
