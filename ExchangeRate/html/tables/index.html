@@ -8,7 +8,7 @@
 	
 	<script src="../ExchangeRate-data.js"></script>
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="lib/jquery/jquery.min.js"></script>
 	<script src="lib/underscore.js/underscore.js"></script>
 	
 	<script src="js/index.js"></script>
@@ -19,9 +19,34 @@
 	
 	<script src="lib/d3.js/d3.v3.js"></script>
 	<script src="lib/nv.d3.js/nv.d3.js"></script>
-	<script src="lib/nv.d3.js/cie.js"></script>
 	<!-- CSS -->
 	<link rel="stylesheet" href="lib/nv.d3.css">
+	<style>
+body {
+  overflow-y:scroll;
+}
+
+text {
+  font: 12px sans-serif;
+}
+
+svg {
+  display: block;
+}
+
+#chart1 svg {
+  height: 500px;
+  min-width: 100px;
+  min-height: 100px;
+/*
+  margin: 50px;
+  Minimum height and width is a good idea to prevent negative SVG dimensions...
+  For example width should be =< margin.left + margin.right + 1,
+  of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
+*/
+}
+
+</style>
   
 </head>
 <body>
@@ -50,7 +75,10 @@
 	<div id="xCHTarget" style="display:none;">
 	</div>
 	
-	<div id="xCHGraph">
+	<div id="xCHGraph">	
+		<div id="chart" class='with-3d-shadow with-transitions'>
+			<svg style="height: 500px;"></svg>
+		</div>
 	</div>
 
 	<script> 
@@ -90,6 +118,52 @@
 			updateDataSeries.timeout = null;
 			updateDataSeries();
 		});
+		
+		
+		
+		
+		
+		
+		
+		$().ready(function(){
+			nv.addGraph(function() {
+			  var chart = nv.models.lineWithFocusChart();
+
+			 // chart.transitionDuration(500);
+			  chart.xAxis
+				  .tickFormat(d3.format(',f'));
+			  chart.x2Axis
+				  .tickFormat(d3.format(',f'));
+
+			  chart.yAxis
+				  .tickFormat(d3.format(',.2f'));
+			  chart.y2Axis
+				  .tickFormat(d3.format(',.2f'));
+
+			  d3.select('#chart svg')
+				  .datum(getGraphData())
+				  .call(chart);
+
+			  nv.utils.windowResize(chart.update);
+
+			  return chart;
+			});
+		});
+		
+		function getGraphData() {
+		  var gd = [];
+		  
+		  var d = [];
+		  d['key'] = "EUR - sell";
+		  d['values'] = [];
+		  d['values'].push({ x:12, y:4.4 });
+		  d['values'].push({ x:13, y:4.5 });
+		  d['values'].push({ x:14, y:4.6 });
+		  d['values'].push({ x:15, y:4.7 });
+		  
+		  gd.push(d);
+		  return gd;
+		}
 	</script>
 </body>
 </html>
