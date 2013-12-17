@@ -4,19 +4,24 @@
 	<meta charset="utf-8">
 	<title>xCh - data tables</title>
 	<script>document.write('<base href="' + document.location + '" />');</script>
-	<script src="http://momentjs.com/downloads/moment.min.js"></script>
+	<script src="lib/moment.js/moment.js"></script>
 	
 	<script src="../ExchangeRate-data.js"></script>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="http://underscorejs.org/underscore-min.js"></script>
+	<script src="lib/underscore.js/underscore.js"></script>
 	
 	<script src="js/index.js"></script>
 	<script src="js/xCH.js"></script>
 	<script src="js/ExchangeRateDataParser.js"></script>
-  
-	<!-- line-chart stylesheet -->
+	<!-- CSS -->
 	<link rel="stylesheet" href="css/index.css">
+	
+	<script src="lib/d3.js/d3.v3.js"></script>
+	<script src="lib/nv.d3.js/nv.d3.js"></script>
+	<script src="lib/nv.d3.js/cie.js"></script>
+	<!-- CSS -->
+	<link rel="stylesheet" href="lib/nv.d3.css">
   
 </head>
 <body>
@@ -42,7 +47,10 @@
 		</table>
 	</div>
 	
-	<div id="xCHTarget">
+	<div id="xCHTarget" style="display:none;">
+	</div>
+	
+	<div id="xCHGraph">
 	</div>
 
 	<script> 
