@@ -8102,6 +8102,7 @@ d3 = function() {
       return d3_time_formatPad(d.getFullYear() % 100, p, 2);
     },
     Y: function(d, p) {
+		console.info(d, p);
       return d3_time_formatPad(d.getFullYear() % 1e4, p, 4);
     },
     Z: d3_time_zone,

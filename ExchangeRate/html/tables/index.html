@@ -20,7 +20,7 @@
 	<script src="lib/d3.js/d3.v3.js"></script>
 	<script src="lib/nv.d3.js/nv.d3.js"></script>
 	<!-- CSS -->
-	<link rel="stylesheet" href="lib/nv.d3.css">
+	<link rel="stylesheet" href="lib/nv.d3.js/nv.d3.css">
 	<style>
 body {
   overflow-y:scroll;
@@ -127,42 +127,43 @@ svg {
 		
 		$().ready(function(){
 			nv.addGraph(function() {
-			  var chart = nv.models.lineWithFocusChart();
+				var chart = nv.models.lineWithFocusChart();
 
-			 // chart.transitionDuration(500);
-			  chart.xAxis
-				  .tickFormat(d3.format(',f'));
-			  chart.x2Axis
-				  .tickFormat(d3.format(',f'));
+				chart.xAxis.tickFormat(function(d) { 
+					return d3.time.format('%H:%M')(new Date(d)) ;
+				});
+				chart.x2Axis.tickFormat(function(d) { 
+					return d3.time.format('%d %b')(new Date(d)) ;
+				});
+				
+				chart.yAxis.tickFormat(d3.format(',.4f'));
+				chart.y2Axis.tickFormat(d3.format(',.2f'));
+				  
+				d3.select('#chart svg').datum(getGraphData(xchData)).transition().duration(250).call(chart);
 
-			  chart.yAxis
-				  .tickFormat(d3.format(',.2f'));
-			  chart.y2Axis
-				  .tickFormat(d3.format(',.2f'));
-
-			  d3.select('#chart svg')
-				  .datum(getGraphData())
-				  .call(chart);
-
-			  nv.utils.windowResize(chart.update);
-
-			  return chart;
+				nv.utils.windowResize(chart.update);
+				return chart;
 			});
 		});
 		
-		function getGraphData() {
-		  var gd = [];
+		function getGraphData(data) {
+			var gd = [];
+			var d = [];
+			
+			d['key'] = "EUR - sell";
+			d['values'] = [];
 		  
-		  var d = [];
-		  d['key'] = "EUR - sell";
-		  d['values'] = [];
-		  d['values'].push({ x:12, y:4.4 });
-		  d['values'].push({ x:13, y:4.5 });
-		  d['values'].push({ x:14, y:4.6 });
-		  d['values'].push({ x:15, y:4.7 });
+			data.reset();
+			var rawdata = null;
+			while( rawdata = data.next() ) {
+				d['values'].push({ 
+					x:rawdata['dt']['date_raw'].toDate(),
+					y:rawdata['values']['BNR']['EUR']['sell'], 
+				});
+			};
 		  
-		  gd.push(d);
-		  return gd;
+			gd.push(d);
+			return gd;
 		}
 	</script>
 </body>
