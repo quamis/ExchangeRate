@@ -15,15 +15,7 @@ body{
 	width: 100%;
 }
 #displayedDays>div.selector>input{
-	width: 200px;
-	display: block;
-}
-#displayedDays>div.selector>span{
-	float: right;
-	width: 3em; 
-	height: 16px;
-	text-align: right;
-	border-bottom: 1px solid #888;
+	display: none;
 }
 #displayedDays>div.shotcuts{
 	text-align: left;
@@ -205,4 +197,29 @@ table>tbody>tr>td.maximum-25p{
 }
 #xCHTarget>table.header tbody td:nth-child(1){
 	text-align: left;
+}
+
+
+#xCHGraph{
+	margin-right: 300px;
+}
+
+#xCHGraph svg .nv-focus .nv-linesWrap .nv-groups .nv-line{
+	stroke-width: 1px;
+}
+
+#xCHGraph svg .nv-focus .nv-linesWrap .nv-groups .nv-series-0 .nv-line{
+	stroke-width: 3px;
+}
+
+#xCHGraph svg .nv-context .nv-linesWrap .nv-groups .nv-line{
+	stroke-opacity: 0.15;
+	stroke-width: 1px;
+}
+#xCHGraph svg .nv-context .nv-linesWrap .nv-groups .nv-series-0 .nv-line{
+	stroke-width: 2px;
+	stroke-opacity: 0.40;
+}
+#xCHGraph svg .nv-context:hover .nv-linesWrap .nv-groups .nv-line{
+	stroke-opacity: 0.40;
 }

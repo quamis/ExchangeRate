@@ -56,8 +56,7 @@ svg {
 				<td>Days</td>
 				<td id="displayedDays" >
 					<div class="selector">
-						<span></span>
-						<input type="range" value="14" min="3" max="360" step="1">
+						<input type="text" value="14"/>
 					</div>
 					<div class='shortcuts'>
 						<span data-value="3">3d</span>
@@ -69,18 +68,37 @@ svg {
 					</div>
 				</td>
 			</tr>
+			
+			<tr>
+				<td>Graph</td>
+				<td>
+					<input type="checkbox"
+						autocomplete="off"
+						onclick="if($(this).is(':checked')) {
+							$('#xCHGraph').show();
+							if(!nv.graphs.length) {
+								renderGraph();
+							}
+							$('#xCHTarget').hide();
+						}
+						else {
+							$('#xCHGraph').hide();
+							$('#xCHTarget').show();
+						}" />
+				</td>
+			</tr>
 		</table>
 	</div>
 	
-	<div id="xCHTarget" style="display:none;">
-	</div>
-	
-	<div id="xCHGraph">	
+	<div id="xCHGraph" style="display: none;">	
 		<div id="chart" class='with-3d-shadow with-transitions'>
 			<svg style="height: 500px;"></svg>
 		</div>
 	</div>
-
+	
+	<div id="xCHTarget" style="display:block;">
+	</div>
+	
 	<script> 
 		xchData = new ExchangeRateDataParser(ExchangeRateData);
 		xchData.addFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate());
@@ -89,9 +107,10 @@ svg {
 		
 		function updateDataSeries() {
 			updateDataSeries.timeout = null;
-			xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate())
 			xch.reset();
 			setTimeout(function(){
+				xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate());
+				xch.reset();
 				xch.render();
 			}, 1);
 		}
@@ -122,15 +141,12 @@ svg {
 		
 		
 		
-		
-		
-		
-		$().ready(function(){
+		function renderGraph() {
 			nv.addGraph(function() {
 				var chart = nv.models.lineWithFocusChart();
 
 				chart.xAxis.tickFormat(function(d) { 
-					return d3.time.format('%H:%M')(new Date(d)) ;
+					return d3.time.format('%d')(new Date(d)) ;
 				});
 				chart.x2Axis.tickFormat(function(d) { 
 					return d3.time.format('%d %b')(new Date(d)) ;
@@ -144,25 +160,72 @@ svg {
 				nv.utils.windowResize(chart.update);
 				return chart;
 			});
-		});
+		}
+		
+		
+		function _getGraphData(data, title, bank, currency, operation, style) {
+			var d = [];
+			
+			d['key'] = title;
+			d['values'] = [];
+			d['color'] = style['color'];
+		  
+			/*
+			 * daca asta se dovedeste prea lent, as putea sa apelez un callback in bucla while, in loc sa compun eu un array element cu element, sa imi dea callbackul lista de elemente pe care le vrea returnate la final
+			*/
+			
+			data.reset();
+			data.setFilter('startDate', moment().subtract('year', 1).toDate());
+			var rawdata = null;
+			var lastdata = null;
+			var thisdata = null;
+			while( rawdata = data.nextWithCallback(_.bind(xch._data_callback, xch)) ) {
+				thisdata = null;
+				if (bank in rawdata['values']) {
+					if (rawdata['values'][bank][currency][operation]) {
+						thisdata = rawdata['values'][bank][currency][operation];
+					}
+				}
+				else{
+					thisdata = lastdata;
+				}
+				
+				d['values'].push({ 
+					x:rawdata['dt']['date_raw'].toDate(),
+					y: thisdata, 
+				});
+				lastdata = thisdata;
+			};
+			
+			return d;
+		}
 		
 		function getGraphData(data) {
 			var gd = [];
-			var d = [];
 			
-			d['key'] = "EUR - sell";
-			d['values'] = [];
-		  
-			data.reset();
-			var rawdata = null;
-			while( rawdata = data.next() ) {
-				d['values'].push({ 
-					x:rawdata['dt']['date_raw'].toDate(),
-					y:rawdata['values']['BNR']['EUR']['sell'], 
-				});
-			};
-		  
-			gd.push(d);
+			/*
+			@see http://colorschemedesigner.com/#00427w0w0w0w0
+			@see http://colorschemedesigner.com/#1q427w0w0w0w0
+			*/
+			
+			console.info('---------- BNR ------------------------------');
+			gd.push(_getGraphData(data, 'BNR - EUR - sell', 'BNR', 'EUR', 'sell', { 'color': '#FF4040' }));	// referende bank
+			
+			console.info('---------- RIB ------------------------------');
+			gd.push(_getGraphData(data, 'RIB - EUR - sell', 'RIB', 'EUR', 'sell', { 'color': '#FFAD40' }));	// light
+			gd.push(_getGraphData(data, 'RIB - EUR - buy',  'RIB', 'EUR', 'buy',  { 'color': '#A65F00' }));	// dark
+			
+			try{
+				console.info('---------- CEC ------------------------------');
+				gd.push(_getGraphData(data, 'CEC - EUR - sell', 'CEC', 'EUR', 'sell', { 'color': '#3F92D2' }));	// light
+				gd.push(_getGraphData(data, 'CEC - EUR - buy',  'CEC', 'EUR', 'buy',  { 'color': '#033E6B' }));	// dark
+			}catch(ex) {
+				console.info(ex);
+				console.info(data);
+			}
+			
+			console.log(gd);
+			
 			return gd;
 		}
 	</script>

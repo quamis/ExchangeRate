@@ -71,13 +71,9 @@ _xCH.prototype.data_parser_getMinMax = function(currency){
 	return ret;
 }
 
-_xCH.prototype.data_parser_next = function(){
-	var rawdata = this.data.next();
+_xCH.prototype._data_callback = function(rawdata){
 	var dt = {};
 	
-	if(!rawdata){
-		return null;
-	}
 	dt['reference'] = 	Number(rawdata['values'][this.referenceBank]['EUR']['sell']);
 	dt['date_raw'] = 	moment.utc(rawdata['date'], "YYYY-MM-DDTHH:mm:ssZ"); // date fmt: 2013-08-13T14:00:00+0000
 	dt['date_ymd'] = 	dt['date_raw'].format("YYYY-MM-DD");
@@ -115,7 +111,7 @@ _xCH.prototype.data_parser_next = function(){
 	
 	this.yesterdayValue = rawdata;
 	
-	return dt;
+	return rawdata;
 }
 
 _xCH.prototype.render_row_attachClasses = function(td, diff, value){
@@ -283,9 +279,9 @@ _xCH.prototype.render = function(){
 	table.addClass('data');
 
 	var lastValue = null;
-	while(dt = this.data_parser_next()){
+	while(dt = this.data.nextWithCallback(_.bind(this._data_callback, this))){
 		var tr = $('<tr>');
-		tr = this.render_row(tr, dt);
+		tr = this.render_row(tr, dt['dt']);
 		
 		if(tr.hasClass('newDay')) {
 			tbody = $('<tbody>');

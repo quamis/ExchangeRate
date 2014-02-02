@@ -69,3 +69,11 @@ ExchangeRateDataParser.prototype.getRawData = function(){
 	return this.rawData;
 }
 
+/*--------------------------------*/
+ExchangeRateDataParser.prototype.nextWithCallback = function(callback){
+	var data = this.next();
+	if(data) {
+		return callback(data);
+	}
+	return null;
+}
