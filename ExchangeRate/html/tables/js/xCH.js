@@ -3,7 +3,7 @@ function _xCH(data){
 	this.target = null;
 	this.yesterdayValue = null;
 	
-	this.definedBanks = ['AlphaBank', 'CEC', 'RIB', 'Transilvania', 'BCR', ];
+	this.definedBanks = ['AlphaBank', 'CEC', 'RIB', 'Carpatica', 'Transilvania', 'BCR', ];
 	this.referenceBank = 'BNR';
 	this.CACHE = {};
 }
