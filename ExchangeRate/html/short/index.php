@@ -60,6 +60,8 @@ foreach($x as $k=>$v) {
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=yes">
+	
 	<title>xCh - short info</title>
 	<script>document.write('<base href="' + document.location + '" />');</script>
 	<script src="lib/moment.js/moment.js"></script>
@@ -68,8 +70,9 @@ foreach($x as $k=>$v) {
 	<script src="lib/underscore.js/underscore.js"></script>
 	
 	<!-- CSS -->
-	<link rel="stylesheet" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="only screen and (min-device-width: 100px)" />
 </head>
+
 <body>
 	<div class='stats'>
 		<div>
@@ -84,27 +87,46 @@ foreach($x as $k=>$v) {
 	</div>
 	
 	<div class='lastXchData'>
-		<div>
-			<span class='label'>date</span>
+		<div class='date'>
 			<span class='value'><?=$lastXchData->date->format("d M, H:i");?></span>
 		</div>
 		
-		<div>
+		<div class='data'>
 			<?php foreach($sortedSellXchData as $currency=>$xchData) { ?>
-				<div class='data <?=$currency?>'>
-					<span class='label'><?=$currency?></span>
-					<span class='value'><?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?></span>
-			
+				<div class='<?=$currency?>' onclick='switchCurrency();'>
+					<div class='currency'>
+						<div class='label'><?=$currency?></div>
+						<div class='value'><?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?></div>
+					</div>
+		
 					<div class='banks'>
 						<?php foreach($xchData as $bank=>$value) { ?>
-							<span class='label'><?=$bank?></span>
-							<span class='value'><?=number_format($value, 4)?></span>
+							<div class='bank-<?=$bank?>'>
+								<span class='bank'><?=$bank?></span>
+								<span class='value'><?=number_format($value, 4)?></span>
+							</div>
 						<?php } ?>
 					</div>
 				</div>
 			<?php } ?>
 		</div>
 	</div>
+	
+	<script type="text/javascript">
+		function switchCurrency() {
+			var elm = $('div.lastXchData>div.data>div.visible').get(0);
+			if ($(elm).next().length) {
+				$(elm).removeClass('visible').next().addClass('visible');
+			}
+			else {
+				$(elm).removeClass('visible');
+				$($(elm).siblings().get(0)).addClass('visible');
+			}
+		}
+		$().ready(function() {
+			$($('div.lastXchData>div.data>div').get(0)).addClass('visible');
+		});
+	</script>
 </body>
 </html>
 

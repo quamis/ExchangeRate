@@ -1,1 +1,51 @@
+div.stats {
+	float: right;
+	color: #ccc;
+	text-align: right;
+	font-family: Verdana;
+	font-size: 0.5em;
+}
+div.stats span.value{
+	min-width: 3em;
+	display:inline-block;
+}
+
+
+div.lastXchData>div.date{
+	text-align: center;
+	font-size: 2em;
+	color: #888;
+}
+
+div.lastXchData>div.data>div{
+	display: none;
+}
+div.lastXchData>div.data>div.visible{
+	display:block;
+}
+
+div.lastXchData>div.data div.currency>div{
+	text-align: center;
+	font-size: 2em;
+}
+div.lastXchData>div.data div.currency>div.label{
+	color: #008;
+}
+div.lastXchData>div.data div.currency>div.value{
+	color: #800;
+}
+
+div.lastXchData>div.data div.banks>div{
+	text-align: center;
+	border-bottom: 1px solid #f0f0f0;
+}
+div.lastXchData>div.data div.banks>div>span.bank{
+	display: inline-block;
+	min-width: 10em;
+}
+div.lastXchData>div.data div.banks>div>span.value{
+	display: inline-block;
+	min-width: 5em;
+}
+
 
