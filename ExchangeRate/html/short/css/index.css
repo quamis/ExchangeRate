@@ -1,8 +1,11 @@
+body{
+	font-family: Verdana;
+}
+
 div.stats {
 	float: right;
 	color: #ccc;
 	text-align: right;
-	font-family: Verdana;
 	font-size: 0.5em;
 }
 div.stats span.value{
@@ -13,12 +16,13 @@ div.stats span.value{
 
 div.lastXchData>div.date{
 	text-align: center;
-	font-size: 2em;
-	color: #888;
+	font-size: 1.5em;
+	color: #ccc;
 }
 
 div.lastXchData>div.data>div{
 	display: none;
+	cursor: pointer;
 }
 div.lastXchData>div.data>div.visible{
 	display:block;
@@ -31,8 +35,15 @@ div.lastXchData>div.data div.currency>div{
 div.lastXchData>div.data div.currency>div.label{
 	color: #008;
 }
+div.lastXchData>div.data div.currency>div.label>input.multiplier{
+	font-size: 1em;
+	text-align: right;
+	border: none;
+	width: 3em;
+}
 div.lastXchData>div.data div.currency>div.value{
 	color: #800;
+	font-size: 3em;
 }
 
 div.lastXchData>div.data div.banks>div{

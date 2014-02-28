@@ -93,17 +93,33 @@ foreach($x as $k=>$v) {
 		
 		<div class='data'>
 			<?php foreach($sortedSellXchData as $currency=>$xchData) { ?>
-				<div class='<?=$currency?>' onclick='switchCurrency();'>
+				<div class='<?=$currency?>'>
 					<div class='currency'>
-						<div class='label'><?=$currency?></div>
-						<div class='value'><?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?></div>
+						<div class='label'>
+							<input value="1" class="multiplier" 
+								onKeyup="
+								var value = Number($(this).val());
+								$(this).parents('div.currency').find('div.value').html(
+									Number(value * $(this).parents('div.currency').find('div.value').attr('data-value')).toFixed(4)
+								);
+								
+								$(this).parents('div.<?=$currency?>').find('div.banks span.value').each(function(i, sp) {
+									$(sp).html(
+										Number(value * $(sp).attr('data-value')).toFixed(4)
+									);
+								});
+								" 
+							/>
+							<span onclick='switchCurrency();'><?=$currency?></span>
+						</div>
+						<div class='value' data-value="<?=$lastXchData->values->BNR->{$currency}->sell?>"><?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?></div>
 					</div>
 		
 					<div class='banks'>
 						<?php foreach($xchData as $bank=>$value) { ?>
 							<div class='bank-<?=$bank?>'>
 								<span class='bank'><?=$bank?></span>
-								<span class='value'><?=number_format($value, 4)?></span>
+								<span class='value' data-value="<?=$value?>"><?=number_format($value, 4)?></span>
 							</div>
 						<?php } ?>
 					</div>
