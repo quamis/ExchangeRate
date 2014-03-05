@@ -92,55 +92,77 @@ foreach($x as $k=>$v) {
 		</div>
 		
 		<div class='data'>
-			<?php foreach($sortedSellXchData as $currency=>$xchData) { ?>
-				<div class='<?=$currency?>'>
-					<div class='currency'>
-						<div class='label'>
-							<input value="1" class="multiplier" 
-								onKeyup="
-								var value = Number($(this).val());
-								$(this).parents('div.currency').find('div.value').html(
-									Number(value * $(this).parents('div.currency').find('div.value').attr('data-value')).toFixed(4)
-								);
-								
-								$(this).parents('div.<?=$currency?>').find('div.banks span.value').each(function(i, sp) {
-									$(sp).html(
-										Number(value * $(sp).attr('data-value')).toFixed(4)
-									);
-								});
-								" 
-							/>
-							<span onclick='switchCurrency();'><?=$currency?></span>
-						</div>
-						<div class='value' data-value="<?=$lastXchData->values->BNR->{$currency}->sell?>"><?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?></div>
+			<?php
+			$currency = 'EUR';
+			$toCurrency = 'RON';
+			$xchData = $sortedSellXchData['EUR'];
+			?>
+			<div class='currencyContainer <?=$currency?>'>
+				<div class='currency'>
+					<div class='label'>
+						<input value="1" class="multiplier" type="number" />
+						<span class='currency'><?=$currency?></span>
 					</div>
-		
-					<div class='banks'>
-						<?php foreach($xchData as $bank=>$value) { ?>
-							<div class='bank-<?=$bank?>'>
-								<span class='bank'><?=$bank?></span>
-								<span class='value' data-value="<?=$value?>"><?=number_format($value, 4)?></span>
-							</div>
-						<?php } ?>
+					<div class='value' data-value="<?=$lastXchData->values->BNR->{$currency}->sell?>">
+						<input value="<?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?>" class="multiplier" type="number" />
+						<span class='currency'><?=$toCurrency?></span>
 					</div>
 				</div>
-			<?php } ?>
+	
+				<div class='banks'>
+					<?php foreach($xchData as $bank=>$value) { ?>
+						<div class='bank-<?=$bank?>'>
+							<span class='bank'><?=$bank?></span>
+							<span class='value' data-value="<?=$value?>"><?=number_format($value, 4)?></span>
+						</div>
+					<?php } ?>
+				</div>
+			</div>
 		</div>
 	</div>
 	
 	<script type="text/javascript">
-		function switchCurrency() {
-			var elm = $('div.lastXchData>div.data>div.visible').get(0);
-			if ($(elm).next().length) {
-				$(elm).removeClass('visible').next().addClass('visible');
-			}
-			else {
-				$(elm).removeClass('visible');
-				$($(elm).siblings().get(0)).addClass('visible');
-			}
+		recalcBankEquivalents = function (parent, BNRValue, value) {
+			var BNRValueFull = value * BNRValue;
+		
+			$(parent).find('div.banks span.value').each(function(i, sp) {
+				var valueFull = value * Number($(sp).attr('data-value'));
+				$(sp).html( ""
+					+ "<span class='recalculated'>" + valueFull.toFixed(2) + "</span>"
+					+ "<span class='BNRDiff'>+" + (valueFull - BNRValueFull).toFixed(2) + "</span>"
+				);
+			});
 		}
+	
 		$().ready(function() {
-			$($('div.lastXchData>div.data>div').get(0)).addClass('visible');
+			$('input.multiplier').on('focus', function () {
+				$(this).select();
+			});
+			
+			$('div.label>input').on('keyup', function () {
+				var value = Number($(this).val());
+				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
+				var BNRValueFull = value * BNRValue;
+				
+				$(this).parents('div.currency').find('div.value>input').val(
+					BNRValueFull.toFixed(4).replace(/0+$/, '')
+				);
+				
+				recalcBankEquivalents($(this).parents('div.currencyContainer'), BNRValue, value);
+			});
+			
+			$('div.value>input').on('keyup', function () {
+				var value = Number($(this).val());
+				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
+				var BNRValueFull = value / BNRValue;
+				
+				$(this).parents('div.currency').find('div.label>input').val(
+					BNRValueFull.toFixed(2)
+				);
+				
+				recalcBankEquivalents($(this).parents('div.currencyContainer'), BNRValue, BNRValueFull);
+			});
+			
 		});
 	</script>
 </body>

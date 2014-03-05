@@ -21,11 +21,7 @@ div.lastXchData>div.date{
 }
 
 div.lastXchData>div.data>div{
-	display: none;
 	cursor: pointer;
-}
-div.lastXchData>div.data>div.visible{
-	display:block;
 }
 
 div.lastXchData>div.data div.currency>div{
@@ -36,16 +32,22 @@ div.lastXchData>div.data div.currency>div.label{
 	color: #008;
 }
 div.lastXchData>div.data div.currency>div.label>input.multiplier{
+	color: #008;
 	font-size: 1em;
-	text-align: right;
+	text-align: center;
 	border: none;
-	width: 3em;
+	width: 200px;
 }
 div.lastXchData>div.data div.currency>div.value{
 	color: #800;
-	font-size: 3em;
 }
-
+div.lastXchData>div.data div.currency>div.value>input.multiplier{
+	color: #800;
+	font-size: 1.25em;
+	text-align: center;
+	border: none;
+	width: 200px;
+}
 div.lastXchData>div.data div.banks>div{
 	text-align: center;
 	border-bottom: 1px solid #f0f0f0;
@@ -59,4 +61,9 @@ div.lastXchData>div.data div.banks>div>span.value{
 	min-width: 5em;
 }
 
-
+div.lastXchData>div.data div.banks>div>span.value>span.BNRDiff {
+	display: inline-block;
+	min-width: 5em;
+	color: #66c;
+	text-align: right;
+}
