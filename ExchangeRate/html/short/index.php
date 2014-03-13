@@ -11,7 +11,9 @@ $stats = Array();
 $stats['perDay'] = Array();
 $stats['recordedItems'] = 0;
 
-$lastData = null;
+$lastXchData = null;
+$prevKey = null;
+$nextKey = null;
 foreach($fullXchData as $k=>$xch) {
 	$dt = DateTime::createFromFormat('Y-m-dH:i:sT', str_replace("T", "", $xch->date));
 	
@@ -21,8 +23,26 @@ foreach($fullXchData as $k=>$xch) {
 	}
 	$stats['perDay'][$dt->format('Y-m-d')]['recordedItems']++;
 	$stats['recordedItems']++;
-	
-	$lastXchData = $xch;
+
+	if (isset($_GET['id']) && $_GET['id']) {
+		if ($_GET['id']==$k) {
+			$lastXchData = $xch;
+		}
+		else {
+			if ($lastXchData && $prevKey && !$nextKey) {
+				$nextKey = $k;
+			}
+			
+			if (!$lastXchData) {
+				$prevKey = $k;
+			}
+		}
+	}
+	else {
+		$lastXchData = $xch;
+		
+		$prevKey = $k;
+	}
 }
 
 $lastXchData->date = DateTime::createFromFormat('Y-m-dH:i:sT', str_replace("T", "", $lastXchData->date));
@@ -88,7 +108,11 @@ foreach($x as $k=>$v) {
 	
 	<div class='lastXchData'>
 		<div class='date'>
+			<a class='goto prev'
+				href="?id=<?=$prevKey?>">-</a>
 			<span class='value'><?=$lastXchData->date->format("d M, H:i");?></span>
+			<a class='goto next'
+				href="?id=<?=$nextKey?>">+</a>
 		</div>
 		
 		<div class='data'>

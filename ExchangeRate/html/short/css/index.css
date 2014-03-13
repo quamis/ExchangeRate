@@ -13,7 +13,6 @@ div.stats span.value{
 	display:inline-block;
 }
 
-
 div.lastXchData>div.date{
 	text-align: center;
 	font-size: 1.5em;
@@ -23,6 +22,16 @@ div.lastXchData>div.date{
 div.lastXchData>div.data>div{
 	cursor: pointer;
 }
+
+div.lastXchData>div.date>a.goto{
+	display: inline-block;
+	color: #888;
+	font-size: 1em;
+	text-decoration: none;
+	width: 1em;
+}
+
+
 
 div.lastXchData>div.data div.currency>div{
 	text-align: center;
