@@ -157,6 +157,16 @@ foreach($x as $k=>$v) {
 				);
 			});
 		}
+		
+		recalcBankEquivalentsReverse = function (parent, value, BNRValueFull) {
+			$(parent).find('div.banks span.value').each(function(i, sp) {
+				var valueFull = value / Number($(sp).attr('data-value'));
+				$(sp).html( ""
+					+ "<span class='recalculated'>" + valueFull.toFixed(2) + "</span>"
+					+ "<span class='BNRDiff'>+" + (BNRValueFull - valueFull).toFixed(2) + "</span>"
+				);
+			});
+		}
 	
 		$().ready(function() {
 			$('input.multiplier').on('focus', function () {
@@ -177,6 +187,8 @@ foreach($x as $k=>$v) {
 			
 			$('div.value>input').on('keyup', function () {
 				var value = Number($(this).val());
+				
+				
 				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
 				var BNRValueFull = value / BNRValue;
 				
@@ -184,7 +196,7 @@ foreach($x as $k=>$v) {
 					BNRValueFull.toFixed(2)
 				);
 				
-				recalcBankEquivalents($(this).parents('div.currencyContainer'), BNRValue, BNRValueFull);
+				recalcBankEquivalentsReverse($(this).parents('div.currencyContainer'), value, BNRValueFull);
 			});
 			
 		});
