@@ -146,6 +146,14 @@ foreach($x as $k=>$v) {
 	</div>
 	
 	<script type="text/javascript">
+		evalEq = function(text) {
+			if (text.match(/[^0-9\.\/\+\*\-]/)) {
+				return 0;
+			}
+			
+			return new Function("", "return Number("+text+");")();
+		}
+	
 		recalcBankEquivalents = function (parent, BNRValue, value) {
 			var BNRValueFull = value * BNRValue;
 		
@@ -174,7 +182,7 @@ foreach($x as $k=>$v) {
 			});
 			
 			$('div.label>input').on('keyup', function () {
-				var value = Number($(this).val());
+				var value = evalEq($(this).val());
 				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
 				var BNRValueFull = value * BNRValue;
 				
@@ -186,7 +194,7 @@ foreach($x as $k=>$v) {
 			});
 			
 			$('div.value>input').on('keyup', function () {
-				var value = Number($(this).val());
+				var value = evalEq($(this).val());
 				
 				
 				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
