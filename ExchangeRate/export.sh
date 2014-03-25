@@ -32,4 +32,4 @@ scrapy_crawl "$TIME" "CEC"
 scrapy_crawl "$TIME" "Transilvania"
 scrapy_crawl "$TIME" "Carpatica"
 scrapy_crawl "$TIME" "OTP"
-
+scrapy_crawl "$TIME" "Raiffeisen"
