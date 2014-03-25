@@ -31,3 +31,5 @@ scrapy_crawl "$TIME" "RIB"
 scrapy_crawl "$TIME" "CEC"
 scrapy_crawl "$TIME" "Transilvania"
 scrapy_crawl "$TIME" "Carpatica"
+scrapy_crawl "$TIME" "OTP"
+
