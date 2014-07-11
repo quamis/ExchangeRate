@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from datetime import datetime
 import os
 import re
@@ -8,11 +9,18 @@ from database import db
 from database import extractions
 from database import bankLogs
 
+import argparse
 
-path = "/home/exchangerate/ExchangeRate/ExchangeRate/output/"
-outpath = "/home/exchangerate/ExchangeRate/ExchangeRate/output/convert2mysql/"
-print "get filelist in '%s'" % path
-paths = [os.path.join(path,fn) for fn in next(os.walk(path))[2]]
+parser = argparse.ArgumentParser(description='Convert json files to mysql rows. You must have the mysql params in the environment.')
+parser.add_argument('--input', dest='input',            action='store',         type=str,   help='must end in "/"')
+parser.add_argument('--output', dest='output',          action='store',         type=str,   help='must end in "/"')
+args = parser.parse_args()
+
+pathinput = args.input
+pathoutput = args.output
+
+print "get filelist in '%s'" % pathinput
+paths = [os.path.join(pathinput,fn) for fn in next(os.walk(pathinput))[2]]
 print "...got %d files" % len(paths)
 
 print "sort files"
@@ -60,4 +68,4 @@ for path in paths:
         extr.commit()
 
     bankLogs.commit()
-    shutil.move(path, outpath+filename)
+    shutil.move(path, pathoutput+filename)

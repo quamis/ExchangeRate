@@ -1,13 +1,14 @@
-import mysql.connector
-from datetime import datetime
+#!/usr/bin/python
 import os
-import re
-import json
-import sys
-import shutil
 from database import db
 from database import extractions
 from database import bankLogs
+
+import argparse
+
+parser = argparse.ArgumentParser(description='Cleanup the mysql DB after the convertor did his job. You must have the mysql params in the environment.')
+parser.add_argument('--commitType', dest='commitType',          action='store',         type=str,   default='afterCurrency', help='Can be afterCurrency, afterBank, once')
+args = vars(parser.parse_args())
 
 
 DB_USER = os.environ['EXCHANGERATE_DB_USER']
@@ -55,7 +56,14 @@ for bank in availableBanks:
             print "start cleanup"
             for cid in cleanupIds:
                 extr.db.execute("DELETE FROM `extractions` WHERE `id`=%s", [cid])
-            extr.db.commit()
-            print "...done"   
-    
-    
+                
+            if args['commitType']=='afterCurrency':
+                extr.db.commit()
+            print "...done"
+            
+    if args['commitType']=='afterBank':
+        extr.db.commit()
+
+if args['commitType']=='once':
+    extr.db.commit()
+
