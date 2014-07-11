@@ -24,7 +24,7 @@ DB_PASS = os.environ['EXCHANGERATE_DB_PASS']
 DB_DATABASE = os.environ['EXCHANGERATE_DB_DATABASE']
 
 print "connect to DB"
-db = DB(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
+db = DB.DB(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
 extr = extractions(db)
 bankLogs = bankLogs(db)
 print "...connected"
