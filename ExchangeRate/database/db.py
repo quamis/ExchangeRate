@@ -1,6 +1,6 @@
 import mysql.connector
 
-class DB(object):
+class db(object):
     def __init__(self, username, password, database='exchangerate', host='localhost'):
         self.username = username
         self.password = password

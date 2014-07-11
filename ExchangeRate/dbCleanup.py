@@ -5,9 +5,9 @@ import re
 import json
 import sys
 import shutil
-from DB import DB
-from extractions import extractions
-from bankLogs import bankLogs
+from database import db
+from database import extractions
+from database import bankLogs
 
 
 DB_USER = os.environ['EXCHANGERATE_DB_USER']
@@ -15,9 +15,9 @@ DB_PASS = os.environ['EXCHANGERATE_DB_PASS']
 DB_DATABASE = os.environ['EXCHANGERATE_DB_DATABASE']
 
 print "connect to DB"
-db = DB(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
-extr = extractions(db)
-bankLogs = bankLogs(db)
+db = db.db(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
+extr = extractions.extractions(db)
+bankLogs = bankLogs.bankLogs(db)
 print "...connected"
 
 availableBanks = extr.db.getCol("SELECT DISTINCT `bank` FROM `extractions` ORDER BY `bank`")

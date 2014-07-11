@@ -4,9 +4,10 @@ import re
 import json
 import sys
 import shutil
-from DB import DB
-from DB import extractions
-from DB import bankLogs
+from database import db
+from database import extractions
+from database import bankLogs
+
 
 path = "/home/exchangerate/ExchangeRate/ExchangeRate/output/"
 outpath = "/home/exchangerate/ExchangeRate/ExchangeRate/output/convert2mysql/"
@@ -18,15 +19,15 @@ print "sort files"
 paths.sort()
 print "...sorted"
 
-print "connect to DB"
+print "grab env variables"
 DB_USER = os.environ['EXCHANGERATE_DB_USER']
 DB_PASS = os.environ['EXCHANGERATE_DB_PASS']
 DB_DATABASE = os.environ['EXCHANGERATE_DB_DATABASE']
 
 print "connect to DB"
-db = DB.DB(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
-extr = extractions(db)
-bankLogs = bankLogs(db)
+db = db.db(username=DB_USER, password=DB_PASS, database=DB_DATABASE)
+extr = extractions.extractions(db)
+bankLogs = bankLogs.bankLogs(db)
 print "...connected"
 
 print "start loop"
