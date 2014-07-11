@@ -1,12 +1,3 @@
-import mysql.connector
-from datetime import datetime
-import os
-import re
-import json
-import sys
-import shutil
-
-
 class extractions(object):
     def __init__(self, db):
         self.db = db
@@ -19,4 +10,3 @@ class extractions(object):
         
     def getQueryCursor(self, query, params=[]):
         self.db.getQueryCursor(query, params)
-        

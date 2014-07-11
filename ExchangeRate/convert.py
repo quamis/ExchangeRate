@@ -1,4 +1,3 @@
-import mysql.connector
 from datetime import datetime
 import os
 import re
@@ -6,12 +5,8 @@ import json
 import sys
 import shutil
 from DB import DB
-from extractions import extractions
-from bankLogs import bankLogs
-
-
-
-        
+from DB import extractions
+from DB import bankLogs
 
 path = "/home/exchangerate/ExchangeRate/ExchangeRate/output/"
 outpath = "/home/exchangerate/ExchangeRate/ExchangeRate/output/convert2mysql/"

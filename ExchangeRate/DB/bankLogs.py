@@ -1,13 +1,3 @@
-import mysql.connector
-from datetime import datetime
-import os
-import re
-import json
-import sys
-import shutil
-
-
-
 class bankLogs(object):
     def __init__(self, db):
         self.db = db

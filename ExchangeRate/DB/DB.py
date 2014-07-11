@@ -1,10 +1,4 @@
 import mysql.connector
-from datetime import datetime
-import os
-import re
-import json
-import sys
-import shutil
 
 class DB(object):
     def __init__(self, username, password, database='exchangerate', host='localhost'):
@@ -54,4 +48,3 @@ class DB(object):
     def execute(self, query, params=[]):
         cursor = self.getQueryCursor(query, params)
         self.closeQueryCursor(cursor)
-        
