@@ -1,79 +1,65 @@
 <?php
-
 ini_set('display_errors', '1');
 error_reporting(-1);
-
 date_default_timezone_set('UTC');
 
-$fullXchData = json_decode(str_replace(Array("ExchangeRateData = ", "}}}}};"), Array("", "}}}}}"), file_get_contents("../ExchangeRate-data.js")));
+require_once("ExchangeRateLoader.php");
 
-$stats = Array();
-$stats['perDay'] = Array();
-$stats['recordedItems'] = 0;
 
-$lastXchData = null;
+$fullXchData = json_decode(str_replace(Array("ExchangeRateData = ", "}];"), Array("", "}]"), file_get_contents("../ExchangeRate-data.DB.days-7.js")));
+
+$loader = new ExchangerateLoader();
+$loader->loadJson($fullXchData);
+
+
+
+
+$keys = $loader->getKeys();
+
+if (isset($_GET['key']) && $_GET['key']) {
+	$key = $_GET['key'];
+}
+else {
+	#var_dump($keys);
+	#exit();
+	$key = end($keys);
+}
+
+#var_dump($loader->getDates());
+#var_dump($loader->getUpdatesOnDate("2014-05-20"));
+#var_dump($loader->getUpdatesOn("2014-05-20 16:50:00"));
+#var_dump($loader->getCompleteUpdatesOn("2014-05-20 16:50:00"));
+$xchData = $loader->getCompleteUpdatesOn($key);
+
+$keyIdx = array_search($key, $keys);
+
 $prevKey = null;
 $nextKey = null;
-foreach($fullXchData as $k=>$xch) {
-	$dt = DateTime::createFromFormat('Y-m-dH:i:sT', str_replace("T", "", $xch->date));
-	
-	if(!isset($stats['perDay'][$dt->format('Y-m-d')])) {
-		$stats['perDay'][$dt->format('Y-m-d')] = Array();
-		$stats['perDay'][$dt->format('Y-m-d')]['recordedItems'] = 0;
-	}
-	$stats['perDay'][$dt->format('Y-m-d')]['recordedItems']++;
-	$stats['recordedItems']++;
 
-	if (isset($_GET['id']) && $_GET['id']) {
-		if ($_GET['id']==$k) {
-			$lastXchData = $xch;
-		}
-		else {
-			if ($lastXchData && $prevKey && !$nextKey) {
-				$nextKey = $k;
-			}
+if(isset($keys[$keyIdx-1])) {
+	$prevKey = $keys[$keyIdx-1];
+}
+if(isset($keys[$keyIdx+1])) {
+	$nextKey = $keys[$keyIdx+1];
+}
+
+$currency = 'EUR';
+$toCurrency = 'RON';
 			
-			if (!$lastXchData) {
-				$prevKey = $k;
-			}
-		}
+uasort($xchData['sell'][$currency], function($a, $b) {
+	$cmp = $a['value'] - $b['value'];
+	if($cmp>0.000001) {
+		return 1;
+	}
+	elseif($cmp<0.000001) {
+		return -1;
 	}
 	else {
-		$lastXchData = $xch;
-		
-		$prevKey = $k;
+		return 0;
 	}
-}
+});
 
-$lastXchData->date = DateTime::createFromFormat('Y-m-dH:i:sT', str_replace("T", "", $lastXchData->date));
-
-$sortedSellXchData = Array();
-foreach ($lastXchData->values as $bank=>$bxch) {
-	foreach($bxch as $currency=>$xch) {
-		if ($bank!='BNR') {
-			$sortedSellXchData[$currency][$bank] = $xch->sell;
-		}
-	}
-}
-
-
-
-foreach($sortedSellXchData as $currency=>$x) {
-	$v = $sortedSellXchData[$currency];
-	asort($v);
-	$sortedSellXchData[$currency] = $v;
-}
-$x = $sortedSellXchData;
-$sortedSellXchData = Array();
-foreach(Array('EUR', 'USD', 'GBP', 'CHF', ) as $k) {
-	$sortedSellXchData[$k] = $x[$k];
-	unset($x[$k]);
-}
-foreach($x as $k=>$v) {
-	$sortedSellXchData[$k] = $x[$k];
-	unset($x[$k]);
-}
-
+#var_dump($xchData['sell'][$currency]);exit();
 
 ?>
 <!doctype html>
@@ -97,48 +83,51 @@ foreach($x as $k=>$v) {
 	<div class='stats'>
 		<div>
 			<span class='label'>recorded days</span>
-			<span class='value'><?=count($stats['perDay'])?></span>
+			<span class='value'><?=count($loader->getDates())?></span>
 		</div>
 		
 		<div>
 			<span class='label'>recorded items</span>
-			<span class='value'><?=$stats['recordedItems']?></span>
+			<span class='value'><?=count($loader->getKeys())?></span>
 		</div>
 	</div>
 	
 	<div class='lastXchData'>
 		<div class='date'>
-			<a class='goto prev'
-				href="?id=<?=$prevKey?>">-</a>
-			<span class='value'><?=$lastXchData->date->format("d M, H:i");?></span>
-			<a class='goto next'
-				href="?id=<?=$nextKey?>">+</a>
+			<?php if($prevKey) { ?>
+				<a class='goto prev'
+					href="?key=<?=$prevKey?>">-</a>
+			<?php } ?>
+			
+			<a class='reset' href="?key="><?=\DateTime::createFromFormat("Y-m-d H:i:s", $key)->format("d M, H:i")?></a>
+			
+			<?php if($nextKey) { ?>
+				<a class='goto next'
+					href="?key=<?=$nextKey?>">+</a>
+			<?php } ?>
 		</div>
 		
 		<div class='data'>
-			<?php
-			$currency = 'EUR';
-			$toCurrency = 'RON';
-			$xchData = $sortedSellXchData['EUR'];
-			?>
 			<div class='currencyContainer <?=$currency?>'>
 				<div class='currency'>
 					<div class='label'>
-						<input value="1" class="multiplier" type="number" />
+						<input value="1" class="multiplier" type="number" step="any" />
 						<span class='currency'><?=$currency?></span>
 					</div>
-					<div class='value' data-value="<?=$lastXchData->values->BNR->{$currency}->sell?>">
-						<input value="<?=number_format($lastXchData->values->BNR->{$currency}->sell, 4)?>" class="multiplier" type="number" />
+					<div class='value' data-value="<?=$xchData['sell'][$currency]['BNR']['value']?>">
+						<input value="<?=number_format($xchData['sell'][$currency]['BNR']['value'], 4)?>" class="multiplier" type="number" step="any" />
 						<span class='currency'><?=$toCurrency?></span>
 					</div>
 				</div>
 	
 				<div class='banks'>
-					<?php foreach($xchData as $bank=>$value) { ?>
-						<div class='bank-<?=$bank?>'>
-							<span class='bank'><?=$bank?></span>
-							<span class='value' data-value="<?=$value?>"><?=number_format($value, 4)?></span>
-						</div>
+					<?php foreach($xchData['sell'][$currency] as $bank=>$data) { ?>
+						<?php if ($bank!='BNR') { ?>
+							<div class='bank-<?=$bank?> <?=($data['key']==$key?"value-changed-0":"")?>'>
+								<span class='bank'><?=$bank?></span>
+								<span class='value' data-value="<?=$data['value']?>"><?=number_format($data['value'], 4)?></span>
+							</div>
+						<?php } ?>
 					<?php } ?>
 				</div>
 			</div>
@@ -184,10 +173,11 @@ foreach($x as $k=>$v) {
 			$('div.label>input').on('keyup', function () {
 				var value = evalEq($(this).val());
 				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
+				
 				var BNRValueFull = value * BNRValue;
 				
 				$(this).parents('div.currency').find('div.value>input').val(
-					BNRValueFull.toFixed(4).replace(/0+$/, '')
+					BNRValueFull.toFixed(4).replace(/(\.)?[0]+$/, '')
 				);
 				
 				recalcBankEquivalents($(this).parents('div.currencyContainer'), BNRValue, value);
@@ -211,4 +201,3 @@ foreach($x as $k=>$v) {
 	</script>
 </body>
 </html>
-

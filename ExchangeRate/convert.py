@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from datetime import datetime
-import os
+import os, errno
 import re
 import json
 import sys
@@ -14,10 +14,11 @@ import argparse
 parser = argparse.ArgumentParser(description='Convert json files to mysql rows. You must have the mysql params in the environment.')
 parser.add_argument('--input', dest='input',            action='store',         type=str,   help='must end in "/"')
 parser.add_argument('--output', dest='output',          action='store',         type=str,   help='must end in "/"')
-args = parser.parse_args()
+parser.add_argument('--commitType', dest='commitType',          action='store', type=str,   default='often', help='Can be: often, daily, once')
+args = vars(parser.parse_args())
 
-pathinput = args.input
-pathoutput = args.output
+pathinput = args['input']
+pathoutput = args['output']
 
 print "get filelist in '%s'" % pathinput
 paths = [os.path.join(pathinput,fn) for fn in next(os.walk(pathinput))[2]]
@@ -65,7 +66,28 @@ for path in paths:
             extr.insert(bank, m.group('optype'), m.group('currency'), float(data[0][curr]), dt)
             
         bankLogs.insert(bank, "data:inserted", dt)
-        extr.commit()
+        if args['commitType']=='often':
+            extr.commit()
 
+    if args['commitType']=='often':
+        bankLogs.commit()
+    
+    subdir = dt.strftime("%Y%m%d")+"/"
+    
+    try:
+        os.mkdir(pathoutput+subdir)
+        if args['commitType']=='daily':
+            extr.commit()
+            bankLogs.commit()
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST:
+            pass
+        
+    shutil.move(path, pathoutput+subdir+filename)
+
+if args['commitType']=='once':
+    extr.commit()
     bankLogs.commit()
-    shutil.move(path, pathoutput+filename)
+    
+extr.commit()
+bankLogs.commit()

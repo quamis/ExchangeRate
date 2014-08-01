@@ -100,6 +100,40 @@ for k in fullData:
     lastIndex = k
 print ""
 
+"""
+    [u'USD', u'CHF', u'GBP', u'EUR']
+"""
+print fullCurrencies
+
+
+"""
+    '2014-07-12 09:55:00'=>{
+        'date': '2014-07-12T09:55:00+0000', 
+        'values': {
+            'CEC': {
+                u'USD': {u'sell': 3.3, u'buy': 3.18}, 
+                u'CHF': {u'sell': 3.69, u'buy': 3.53}, 
+                u'GBP': {u'sell': 5.61, u'buy': 5.45}, 
+                u'EUR': {u'sell': 4.44, u'buy': 4.36}
+            }, 
+            'Transilvania': {
+                u'USD': {u'sell': 3.298, u'buy': 3.2005}, 
+                u'CHF': {u'sell': 3.7026, u'buy': 3.5753}, 
+                u'GBP': {u'sell': 5.6428, u'buy': 5.476}, 
+                u'EUR': {u'sell': 4.4675, u'buy': 4.3675}
+            }, 
+            'BNR': {
+                u'USD': {u'sell': 3.2461, u'buy': 3.2461}, 
+                u'CHF': {u'sell': 3.6381, u'buy': 3.6381}, 
+                u'GBP': {u'sell': 5.5652, u'buy': 5.5652}, 
+                u'EUR': {u'sell': 4.4179, u'buy': 4.4179}
+            }, 
+        }
+    },
+"""
+print fullData  
+exit()
+
 if args['output']=="print":
     # 20 chars: date
     # 15 chars: bank

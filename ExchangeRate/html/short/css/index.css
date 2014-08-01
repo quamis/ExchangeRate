@@ -25,10 +25,15 @@ div.lastXchData>div.data>div{
 
 div.lastXchData>div.date>a.goto{
 	display: inline-block;
-	color: #888;
+	color: #ccc;
 	font-size: 1em;
 	text-decoration: none;
 	width: 1em;
+}
+div.lastXchData>div.date>a.reset {
+	color: #888;
+	font-size: 1em;
+	text-decoration: none;
 }
 
 
@@ -68,6 +73,9 @@ div.lastXchData>div.data div.banks>div>span.bank{
 div.lastXchData>div.data div.banks>div>span.value{
 	display: inline-block;
 	min-width: 5em;
+}
+div.lastXchData>div.data div.banks>div.value-changed-0{
+	background-color: #FFFCFC;
 }
 
 div.lastXchData>div.data div.banks>div>span.value>span.BNRDiff {

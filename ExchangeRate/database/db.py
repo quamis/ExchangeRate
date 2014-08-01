@@ -44,6 +44,22 @@ class db(object):
             ret.append(v[0])
         self.closeQueryCursor(cursor)
         return ret
+        
+    def getAll(self, query, params=[], keys=[]):
+        #cursor = self.connection.cursor(dictionary=True)
+        #cursor.execute(query, params)
+        #ret = []
+        #for v in cursor:
+        #    ret.append(v)
+        #self.closeQueryCursor(cursor)
+        
+        cursor = self.getQueryCursor(query, params)
+        ret = []
+        for values in cursor:
+            ret.append(dict(zip(keys, values)))
+        self.closeQueryCursor(cursor)
+        
+        return ret
     
     def execute(self, query, params=[]):
         cursor = self.getQueryCursor(query, params)

@@ -7,7 +7,7 @@ from database import bankLogs
 import argparse
 
 parser = argparse.ArgumentParser(description='Cleanup the mysql DB after the convertor did his job. You must have the mysql params in the environment.')
-parser.add_argument('--commitType', dest='commitType',          action='store',         type=str,   default='afterCurrency', help='Can be afterCurrency, afterBank, once')
+parser.add_argument('--commitType', dest='commitType',          action='store',         type=str,   default='afterCurrency', help='Can be: afterCurrency, afterBank, once')
 args = vars(parser.parse_args())
 
 
@@ -66,4 +66,6 @@ for bank in availableBanks:
 
 if args['commitType']=='once':
     extr.db.commit()
+
+extr.db.commit()
 
