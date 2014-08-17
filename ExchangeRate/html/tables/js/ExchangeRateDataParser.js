@@ -1,79 +1,189 @@
 function ExchangeRateDataParser(data){
 	this.filters = { };
-	this.data = $.map(data, function(elm){return elm}); // loose keys, keep it indexed by key
-	
 	this.reset();
+	
+	var x = this.remap(data);
+	this.groupedData = x.groupedData;
+	this.definedBanks = x.definedBanks;
+	this.definedCurrencies = x.definedCurrencies;
+	
+	
+}
+
+ExchangeRateDataParser.prototype.reset = function(){
+	this.currentIndex = -1;
+	this.groupedData = [];
+	this.definedBanks = [];
+	this.definedCurrencies = [];
 }
 
 ExchangeRateDataParser.prototype.destroy = function(){
 }
 
-ExchangeRateDataParser.prototype._next = function(){
-	this.currentIndex++;
-	var value = this.data[this.currentIndex];
-	
-	if(value==null)
-		return null;
-	
-	var dt = moment.utc(value['date'], "YYYY-MM-DDTHH:mm:ssZ");
-	
-	if(this.filters['startDate'] && dt<this.filters['startDate']) {
-		return 'row:skip';
+ExchangeRateDataParser.prototype.remap = function(data){
+	var definedCurrencies = {};
+	var definedBanks = {};
+
+	var gdata = {};
+	for(var i=0; i<data.length; i++) {
+		var xch = data[i];
+		var ymd = 		xch['time'].substring(0, 10);
+		var ymdhis = 	xch['time'].substring(0, 10) + " " + xch['time'].substring(11);
+		
+		if (definedCurrencies[xch['currency']]==null) {
+			definedCurrencies[xch['currency']] = 0;
+		}
+		definedCurrencies[xch['currency']]++;
+		
+		if (definedBanks[xch['bank']]==null) {
+			definedBanks[xch['bank']] = 0;
+		}
+		definedBanks[xch['bank']]++;
+		
+		
+		if (gdata[ymdhis]==null) {
+			gdata[ymdhis] = {};
+		}
+		if (gdata[ymdhis][xch['type']]==null) {
+			gdata[ymdhis][xch['type']] = {};
+		}
+		if (gdata[ymdhis][xch['type']][xch['currency']]==null) {
+			gdata[ymdhis][xch['type']][xch['currency']] = {};
+		}
+		if (gdata[ymdhis][xch['type']][xch['currency']][xch['bank']]==null) {
+			gdata[ymdhis][xch['type']][xch['currency']][xch['bank']] = {};
+		}
+		
+		gdata[ymdhis][xch['type']][xch['currency']][xch['bank']] = xch['value'];
 	}
-
-	if(this.filters['endDate'] && dt<this.filters['endDate']) {
-		return 'row:skip';
-	}
 	
-	return value;
+	return {
+		'groupedData': gdata,
+		'definedBanks': _.keys(definedBanks),
+		'definedCurrencies': _.keys(definedCurrencies),
+	};
 }
 
-ExchangeRateDataParser.prototype.next = function(){
-	var value = null;
-	do{
-		value = this._next();
-	}while(value==='row:skip');
+ExchangeRateDataParser.prototype.getRawGroupedData = function(){
+	return this.groupedData ;
+}
+
+
+ExchangeRateDataParser.prototype.getKeys = function(){
+	return _.keys(this.groupedData) ;
+}
+
+ExchangeRateDataParser.prototype.getDates = function(){
+	return _.uniq(this.getKeys().map(function(a){ return a.substr(0, 10); })).sort();
+}
+
+ExchangeRateDataParser.prototype.getUpdatesOnDate = function(dt){
+	return _.pick(this.getRawGroupedData(), this.getKeys().filter(function(a){ return a.substr(0, 10)==dt;}))
+}
+
+ExchangeRateDataParser.prototype.getUpdatesOn = function(dtt){
+	return this.getRawGroupedData()[dtt];
+}
+
+ExchangeRateDataParser.prototype.getCompleteUpdatesOn = function(dtt){
+	var root = this.groupedData[dtt];
+	var ret = {};
+	var gatheredCurrencies = {};
+	var gatheredBanks = {};
 	
-	return value;
-}
-
-ExchangeRateDataParser.prototype.setFilter = function(key, value){
-	this.filters[key] = value;
-	return this;
-}
-
-ExchangeRateDataParser.prototype.addFilter = function(key, value){
-	this.filters[key] = value;
-	return this;
-}
-
-
-ExchangeRateDataParser.prototype.reset = function(){
-	this.currentIndex = -1;
-	this.rawData = [];
-}
-
-ExchangeRateDataParser.prototype.getRawData = function(){
-	if(this.rawData.length==0) {
-		var currentIndex = this.currentIndex;
-		this.currentIndex = -1;
-		do {
-			var data = this.next();
-			
-			if(data) {
-				this.rawData.push(data);
+	for(var operation in root) {
+		for(var currency in root[operation]) {
+			for(var bank in root[operation][currency]) {
+				if (ret[operation]==null) {
+					ret[operation] = {};
+				}
+				if (ret[operation][currency]==null) {
+					ret[operation][currency] = {};
+				}
+				if (ret[operation][currency][bank]==null) {
+					ret[operation][currency][bank] = {};
+				}
+				
+				ret[operation][currency][bank] = {
+					'value':	root[operation][currency][bank], 
+					'key':		dtt,
+				};
+				
+				if(gatheredCurrencies[currency]==null) {
+					gatheredCurrencies[currency] = 0;
+				}
+				gatheredCurrencies[currency]++;
+				
+				if(gatheredBanks[bank]==null) {
+					gatheredBanks[bank] = 0;
+				}
+				if(gatheredBanks[bank][currency]==null) {
+					gatheredBanks[bank][currency] = 0;
+				}
+				gatheredBanks[bank][currency]++;
 			}
-		}while(data);
-		this.currentIndex = currentIndex;
+		}
 	}
-	return this.rawData;
-}
-
-/*--------------------------------*/
-ExchangeRateDataParser.prototype.nextWithCallback = function(callback){
-	var data = this.next();
-	if(data) {
-		return callback(data);
+	
+	var keys = this.getKeys();
+	var keyIdx = keys.indexOf(dtt);
+	
+	var brk = false;
+	for(var idx=keyIdx; idx>0; idx--) {
+		var key = keys[idx];
+		var data = this.groupedData[key];
+		
+		for(var operation in data) {
+			for(var currency in data[operation]) {
+				for(var bank in data[operation][currency]) {
+					if (ret[operation]==null) {
+						ret[operation] = {};
+					}
+					if (ret[operation][currency]==null) {
+						ret[operation][currency] = {};
+					}
+					if (ret[operation][currency][bank]==null) {
+						ret[operation][currency][bank] = {};
+					}
+					
+					if(ret[operation][currency][bank]['value']==null) {
+						ret[operation][currency][bank] = {
+							'value':	data[operation][currency][bank], 
+							'key':		key,
+						};
+					}
+					
+					if(gatheredCurrencies[currency]==null) {
+						gatheredCurrencies[currency] = 0;
+					}
+					gatheredCurrencies[currency]++;
+					
+					if(gatheredBanks[bank]==null) {
+						gatheredBanks[bank] = 0;
+					}
+					if(gatheredBanks[bank][currency]==null) {
+						gatheredBanks[bank][currency] = 0;
+					}
+					gatheredBanks[bank][currency]++;
+				}
+			}
+		}
+		
+		if(_.keys(gatheredCurrencies).length==this.definedCurrencies.length && _.keys(gatheredBanks).length==this.definedBanks.length) {
+			var allFound = true;
+			for(var b in gatheredBanks) {
+				if (gatheredBanks[b].length!=this.definedBanks.length) {
+					allFound = false;
+					break;
+				}
+			}
+			
+			if (allFound) {
+				brk = true;
+				break;
+			}
+		}
 	}
-	return null;
+	
+	return ret;
 }

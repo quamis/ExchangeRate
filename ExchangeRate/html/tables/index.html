@@ -6,13 +6,14 @@
 	<script>document.write('<base href="' + document.location + '" />');</script>
 	<script src="lib/moment.js/moment.js"></script>
 	
-	<script src="../ExchangeRate-data.js"></script>
+	<script src="../ExchangeRate-data.DB.js"></script>
 	
 	<script src="lib/jquery/jquery.min.js"></script>
 	<script src="lib/underscore.js/underscore.js"></script>
 	
 	<script src="js/index.js"></script>
-	<script src="js/xCH.js"></script>
+	<script src="js/xCh.js"></script>	<!-- delete this -->
+	<script src="js/xChTableHandler.js"></script>
 	<script src="js/ExchangeRateDataParser.js"></script>
 	<!-- CSS -->
 	<link rel="stylesheet" href="css/index.css">
@@ -29,28 +30,11 @@ body {
 text {
   font: 12px sans-serif;
 }
-
-svg {
-  display: block;
-}
-
-#chart1 svg {
-  height: 500px;
-  min-width: 100px;
-  min-height: 100px;
-/*
-  margin: 50px;
-  Minimum height and width is a good idea to prevent negative SVG dimensions...
-  For example width should be =< margin.left + margin.right + 1,
-  of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
-*/
-}
-
 </style>
   
 </head>
 <body>
-	<div id="xCHFilters">
+	<div id="xChFilters">
 		<table>
 			<tr>
 				<td>Days</td>
@@ -65,169 +49,20 @@ svg {
 						<span data-value="21">3w</span>
 						<span data-value="31">1m</span>
 						<span data-value="92">3m</span>
+						<span data-value="6330">10y</span>
 					</div>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>Graph</td>
-				<td>
-					<input type="checkbox"
-						autocomplete="off"
-						onclick="if($(this).is(':checked')) {
-							$('#xCHGraph').show();
-							if(!nv.graphs.length) {
-								renderGraph();
-							}
-							$('#xCHTarget').hide();
-						}
-						else {
-							$('#xCHGraph').hide();
-							$('#xCHTarget').show();
-						}" />
 				</td>
 			</tr>
 		</table>
 	</div>
 	
-	<div id="xCHGraph" style="display: none;">	
-		<div id="chart" class='with-3d-shadow with-transitions'>
-			<svg style="height: 500px;"></svg>
-		</div>
-	</div>
-	
-	<div id="xCHTarget" style="display:block;">
+	<div id="xChTableContainer" style="display:block;">
 	</div>
 	
 	<script> 
 		xchData = new ExchangeRateDataParser(ExchangeRateData);
-		xchData.addFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate());
-		xch = new _xCH( xchData ); 
-		xch.attach($('#xCHTarget')).reset().render();
-		
-		function updateDataSeries() {
-			updateDataSeries.timeout = null;
-			xch.reset();
-			setTimeout(function(){
-				xch.data.setFilter('startDate', moment().subtract('days', $('#displayedDays>div.selector>input').val()).toDate());
-				xch.reset();
-				xch.render();
-			}, 1);
-		}
-		
-		$('#displayedDays>div.shortcuts>span').click(function(evt){
-			$('#displayedDays>div.selector>input').val($(evt.target).attr('data-value'));
-			$('#displayedDays>div.selector>span').html($('#displayedDays>div.selector>input').val());
-			updateDataSeries();
-		});
-		
-		$('#displayedDays>div.selector>input').mousemove(function(){
-			$('#displayedDays>div.selector>span').html($('#displayedDays>div.selector>input').val());
-			
-			if(updateDataSeries.timeout) {
-				clearTimeout(updateDataSeries.timeout);
-			}
-			updateDataSeries.timeout = setTimeout(updateDataSeries, 2500);
-		});
-		
-		$('#displayedDays>input').change(function(){
-			if(updateDataSeries.timeout) {
-				clearTimeout(updateDataSeries.timeout);
-			}
-			updateDataSeries.timeout = null;
-			updateDataSeries();
-		});
-		
-		
-		
-		
-		function renderGraph() {
-			nv.addGraph(function() {
-				var chart = nv.models.lineWithFocusChart();
-
-				chart.xAxis.tickFormat(function(d) { 
-					return d3.time.format('%d')(new Date(d)) ;
-				});
-				chart.x2Axis.tickFormat(function(d) { 
-					return d3.time.format('%d %b')(new Date(d)) ;
-				});
-				
-				chart.yAxis.tickFormat(d3.format(',.4f'));
-				chart.y2Axis.tickFormat(d3.format(',.2f'));
-				  
-				d3.select('#chart svg').datum(getGraphData(xchData)).transition().duration(250).call(chart);
-
-				nv.utils.windowResize(chart.update);
-				return chart;
-			});
-		}
-		
-		
-		function _getGraphData(data, title, bank, currency, operation, style) {
-			var d = [];
-			
-			d['key'] = title;
-			d['values'] = [];
-			d['color'] = style['color'];
-		  
-			/*
-			 * daca asta se dovedeste prea lent, as putea sa apelez un callback in bucla while, in loc sa compun eu un array element cu element, sa imi dea callbackul lista de elemente pe care le vrea returnate la final
-			*/
-			
-			data.reset();
-			data.setFilter('startDate', moment().subtract('year', 1).toDate());
-			var rawdata = null;
-			var lastdata = null;
-			var thisdata = null;
-			while( rawdata = data.nextWithCallback(_.bind(xch._data_callback, xch)) ) {
-				thisdata = null;
-				if (bank in rawdata['values']) {
-					if (rawdata['values'][bank][currency][operation]) {
-						thisdata = rawdata['values'][bank][currency][operation];
-					}
-				}
-				else{
-					thisdata = lastdata;
-				}
-				
-				d['values'].push({ 
-					x:rawdata['dt']['date_raw'].toDate(),
-					y: thisdata, 
-				});
-				lastdata = thisdata;
-			};
-			
-			return d;
-		}
-		
-		function getGraphData(data) {
-			var gd = [];
-			
-			/*
-			@see http://colorschemedesigner.com/#00427w0w0w0w0
-			@see http://colorschemedesigner.com/#1q427w0w0w0w0
-			*/
-			
-			console.info('---------- BNR ------------------------------');
-			gd.push(_getGraphData(data, 'BNR - EUR - sell', 'BNR', 'EUR', 'sell', { 'color': '#FF4040' }));	// referende bank
-			
-			console.info('---------- RIB ------------------------------');
-			gd.push(_getGraphData(data, 'RIB - EUR - sell', 'RIB', 'EUR', 'sell', { 'color': '#FFAD40' }));	// light
-			gd.push(_getGraphData(data, 'RIB - EUR - buy',  'RIB', 'EUR', 'buy',  { 'color': '#A65F00' }));	// dark
-			
-			try{
-				console.info('---------- CEC ------------------------------');
-				gd.push(_getGraphData(data, 'CEC - EUR - sell', 'CEC', 'EUR', 'sell', { 'color': '#3F92D2' }));	// light
-				gd.push(_getGraphData(data, 'CEC - EUR - buy',  'CEC', 'EUR', 'buy',  { 'color': '#033E6B' }));	// dark
-			}catch(ex) {
-				console.info(ex);
-				console.info(data);
-			}
-			
-			console.log(gd);
-			
-			return gd;
-		}
+		xch = new xChTableHandler( xchData ); 
+		xch.resetDisplay().render();
 	</script>
 </body>
 </html>
