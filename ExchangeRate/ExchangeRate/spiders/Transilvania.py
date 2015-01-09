@@ -15,17 +15,20 @@ class TransilvaniaSpider(BaseSpider):
 		item = ExchangerateItem()
 		
 		# EUR & USD are repeated 3 times in the whole page, pick the 2'nd one
-		item['EUR_buy'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "EUR")]/../td[6]/text()').extract()[0].strip())
-		item['EUR_sell'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "EUR")]/../td[7]/text()').extract()[0].strip())
+        
+        # //table[@class="cp"]//td/span[contains(text(), "USD")]/../../td[3]/text()
+        
+		item['EUR_buy'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "EUR")]/../../td[3]/text()').extract()[0].strip())
+		item['EUR_sell'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "EUR")]/../../td[4]/text()').extract()[0].strip())
 		
-		item['USD_buy'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "USD")]/../td[6]/text()').extract()[0].strip())
-		item['USD_sell'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "USD")]/../td[7]/text()').extract()[0].strip())
+		item['USD_buy'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "USD")]/../../td[3]/text()').extract()[0].strip())
+		item['USD_sell'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "USD")]/../../td[4]/text()').extract()[0].strip())
 		
-		item['GBP_buy'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "GBP")]/../td[6]/text()').extract()[0].strip())
-		item['GBP_sell'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "GBP")]/../td[7]/text()').extract()[0].strip())
+		item['GBP_buy'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "GBP")]/../../td[3]/text()').extract()[0].strip())
+		item['GBP_sell'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "GBP")]/../../td[4]/text()').extract()[0].strip())
 
-		item['CHF_buy'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "CHF")]/../td[6]/text()').extract()[0].strip())
-		item['CHF_sell'] = 	float(hxs.xpath('//*[@id="content"]//table[@class="cp"]//td[contains(text(), "CHF")]/../td[7]/text()').extract()[0].strip())
+		item['CHF_buy'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "CHF")]/../../td[3]/text()').extract()[0].strip())
+		item['CHF_sell'] = 	float(hxs.xpath('//table[@class="cp"]//td/span[contains(text(), "CHF")]/../../td[4]/text()').extract()[0].strip())
 		
 		return [item]
 		
