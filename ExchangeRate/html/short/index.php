@@ -70,10 +70,10 @@ uasort($xchData['sell'][$currency], function($a, $b) {
 	
 	<title>xCh - short info</title>
 	<script>document.write('<base href="' + document.location + '" />');</script>
-	<script src="lib/moment.js/moment.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 	
-	<script src="lib/jquery/jquery.min.js"></script>
-	<script src="lib/underscore.js/underscore.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
 	
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="css/index.css" media="only screen and (min-device-width: 100px)" />

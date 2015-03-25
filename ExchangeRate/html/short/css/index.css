@@ -1,10 +1,13 @@
+/*
+@see http://paletton.com/#uid=3000u0kkTmv5r++gJSqlldell6q
+*/
 body{
 	font-family: Verdana;
 }
 
 div.stats {
 	float: right;
-	color: #ccc;
+	color: #153F3F;
 	text-align: right;
 	font-size: 0.5em;
 }
@@ -16,7 +19,7 @@ div.stats span.value{
 div.lastXchData>div.date{
 	text-align: center;
 	font-size: 1.5em;
-	color: #ccc;
+	color: #153F3F;
 }
 
 div.lastXchData>div.data>div{
@@ -25,13 +28,13 @@ div.lastXchData>div.data>div{
 
 div.lastXchData>div.date>a.goto{
 	display: inline-block;
-	color: #ccc;
+	color: #692323;
 	font-size: 1em;
 	text-decoration: none;
 	width: 1em;
 }
 div.lastXchData>div.date>a.reset {
-	color: #888;
+	color: #0A1F1F;
 	font-size: 1em;
 	text-decoration: none;
 }
@@ -43,20 +46,20 @@ div.lastXchData>div.data div.currency>div{
 	font-size: 2em;
 }
 div.lastXchData>div.data div.currency>div.label{
-	color: #008;
+	color: #4D6221;
 }
 div.lastXchData>div.data div.currency>div.label>input.multiplier{
-	color: #008;
+	color: #4D6221;
 	font-size: 1em;
 	text-align: center;
 	border: none;
 	width: 200px;
 }
 div.lastXchData>div.data div.currency>div.value{
-	color: #800;
+	color: #692323;
 }
 div.lastXchData>div.data div.currency>div.value>input.multiplier{
-	color: #800;
+	color: #692323;
 	font-size: 1.25em;
 	text-align: center;
 	border: none;
@@ -64,7 +67,7 @@ div.lastXchData>div.data div.currency>div.value>input.multiplier{
 }
 div.lastXchData>div.data div.banks>div{
 	text-align: center;
-	border-bottom: 1px solid #f0f0f0;
+	border-bottom: 1px solid #FF7A7A;
 }
 div.lastXchData>div.data div.banks>div>span.bank{
 	display: inline-block;
@@ -75,7 +78,7 @@ div.lastXchData>div.data div.banks>div>span.value{
 	min-width: 5em;
 }
 div.lastXchData>div.data div.banks>div.value-changed-0{
-	background-color: #FFFCFC;
+	background-color: #FFD4D4;
 }
 
 div.lastXchData>div.data div.banks>div>span.value>span.BNRDiff {
