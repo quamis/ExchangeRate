@@ -70,10 +70,6 @@ uasort($xchData['sell'][$currency], function($a, $b) {
 	
 	<title>xCh - short info</title>
 	<script>document.write('<base href="' + document.location + '" />');</script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
 	
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="css/index.css" media="only screen and (min-device-width: 100px)" />
@@ -134,70 +130,10 @@ uasort($xchData['sell'][$currency], function($a, $b) {
 		</div>
 	</div>
 	
-	<script type="text/javascript">
-		evalEq = function(text) {
-			if (text.match(/[^0-9\.\/\+\*\-]/)) {
-				return 0;
-			}
-			
-			return new Function("", "return Number("+text+");")();
-		}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
 	
-		recalcBankEquivalents = function (parent, BNRValue, value) {
-			var BNRValueFull = value * BNRValue;
-		
-			$(parent).find('div.banks span.value').each(function(i, sp) {
-				var valueFull = value * Number($(sp).attr('data-value'));
-				$(sp).html( ""
-					+ "<span class='recalculated'>" + valueFull.toFixed(2) + "</span>"
-					+ "<span class='BNRDiff'>+" + (valueFull - BNRValueFull).toFixed(2) + "</span>"
-				);
-			});
-		}
-		
-		recalcBankEquivalentsReverse = function (parent, value, BNRValueFull) {
-			$(parent).find('div.banks span.value').each(function(i, sp) {
-				var valueFull = value / Number($(sp).attr('data-value'));
-				$(sp).html( ""
-					+ "<span class='recalculated'>" + valueFull.toFixed(2) + "</span>"
-					+ "<span class='BNRDiff'>+" + (BNRValueFull - valueFull).toFixed(2) + "</span>"
-				);
-			});
-		}
-	
-		$().ready(function() {
-			$('input.multiplier').on('focus', function () {
-				$(this).select();
-			});
-			
-			$('div.label>input').on('keyup', function () {
-				var value = evalEq($(this).val());
-				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
-				
-				var BNRValueFull = value * BNRValue;
-				
-				$(this).parents('div.currency').find('div.value>input').val(
-					BNRValueFull.toFixed(4).replace(/(\.)?[0]+$/, '')
-				);
-				
-				recalcBankEquivalents($(this).parents('div.currencyContainer'), BNRValue, value);
-			});
-			
-			$('div.value>input').on('keyup', function () {
-				var value = evalEq($(this).val());
-				
-				
-				var BNRValue = Number($(this).parents('div.currency').find('div.value').attr('data-value'));
-				var BNRValueFull = value / BNRValue;
-				
-				$(this).parents('div.currency').find('div.label>input').val(
-					BNRValueFull.toFixed(2)
-				);
-				
-				recalcBankEquivalentsReverse($(this).parents('div.currencyContainer'), value, BNRValueFull);
-			});
-			
-		});
-	</script>
+	<script type="text/javascript" src= "lib/index.js"></script>
 </body>
 </html>
