@@ -7,25 +7,24 @@ class CECSpider(BaseSpider):
 	name = "CEC"
 	allowed_domains = ["www.cec.ro"]
 	start_urls = [
-		"https://www.cec.ro/curs-valutar.aspx",
+		"https://www.cec.ro/curs-valutar",
 	]
 
 	def parse(self, response):
 		hxs = Selector(response)
 		item = ExchangerateItem()
+        
+		item['EUR_buy'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "EUR")]/../../td[4]/text()').extract()[0].strip())
+		item['EUR_sell'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "EUR")]/../../td[5]/text()').extract()[0].strip())
 		
-		# EUR & USD are repeated 3 times in the whole page, pick the 2'nd one
-		item['EUR_buy'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "EUR")]/../../td[4]/text()').extract()[0]).strip())
-		item['EUR_sell'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "EUR")]/../../td[5]/text()').extract()[0]).strip())
+		item['USD_buy'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "USD")]/../../td[4]/text()').extract()[0].strip())
+		item['USD_sell'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "USD")]/../../td[5]/text()').extract()[0].strip())
 		
-		item['USD_buy'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "USD")]/../../td[4]/text()').extract()[0]).strip())
-		item['USD_sell'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "USD")]/../../td[5]/text()').extract()[0]).strip())
-		
-		item['GBP_buy'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "GBP")]/../../td[4]/text()').extract()[0]).strip())
-		item['GBP_sell'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "GBP")]/../../td[5]/text()').extract()[0]).strip())
+		item['GBP_buy'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "GBP")]/../../td[4]/text()').extract()[0].strip())
+		item['GBP_sell'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "GBP")]/../../td[5]/text()').extract()[0].strip())
 
-		item['CHF_buy'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "CHF")]/../../td[4]/text()').extract()[0]).strip())
-		item['CHF_sell'] = float(re.sub("[A-Z]", "", hxs.xpath('//td/span[contains(text(), "CHF")]/../../td[5]/text()').extract()[0]).strip())
+		item['CHF_buy'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "CHF")]/../../td[4]/text()').extract()[0].strip())
+		item['CHF_sell'] = float(hxs.xpath('//table[contains(@class, "views-table")]//td/div[contains(text(), "CHF")]/../../td[5]/text()').extract()[0].strip())
 		
 		return [item]
 		
